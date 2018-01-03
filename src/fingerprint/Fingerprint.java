@@ -1,10 +1,10 @@
 package fingerprint;
 
-import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Random;
 
 public class Fingerprint {
@@ -45,34 +45,33 @@ public class Fingerprint {
 	}
 	
 	public static int fingerprint(int p, String fn) {
-		int finger = 0;
-		try {
-			FileInputStream file = new FileInputStream(fn);
-			int n = file.available();
-			int octet;
-			int t;
-			int x;
-			while ((octet = file.read()) != -1) {			
-				//System.out.println(octet);
-				//t = (int)(octet * (Math.pow(256, n)));
-				//finger = (finger + (t % p)) % p;
-				//x = puissance(256, n-1, p);
-				x = (int)Math.pow(256, n-1);
-				t = multiply(octet, x, p);
-				finger = (finger + t)%p;			
-				//System.out.println("m = " + finger);
-				n--;				
-			}
-			file.close();
-		} catch(IOException e) {
-			e.printStackTrace();
+	int finger = 0;
+	try {
+		FileInputStream file = new FileInputStream(fn);
+		int n = file.available();
+		int tab[] = new int[n];
+		tab[0] = 1 % p;
+		for (int i=1; i<n; i++) {
+			tab[i] = (tab[i-1] * 256) % p;
 		}
 		
-		return finger;
+		int octet;
+		while ((octet = file.read()) != -1) {			
+			finger += ((octet % p) * tab[n-1]) % p;
+			n--;				
+		}
+		file.close();
+		
+	} catch(IOException e) {
+		e.printStackTrace();
 	}
 	
+	return finger % p;
+}
+	
 	public static void main(String[] args) {
-		int finger = fingerprint(5407,"test1");
+		int premier = nextprime();
+		int finger = fingerprint(premier,"test2");
 		System.out.println(finger);
 	}
 }
