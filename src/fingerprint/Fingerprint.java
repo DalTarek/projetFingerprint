@@ -28,8 +28,15 @@ public class Fingerprint {
 		return r;
 	}
 
-	public static boolean pseudoprime(int p) {
+	/*public static boolean pseudoprime(int p) {
 		if (Math.pow(2, p-1) % p == 1) {
+			return true;
+		}
+		return false;
+	}*/
+	
+	public static boolean pseudoprime(int p) {
+		if (puissance(2, p-1, p) == 1) {
 			return true;
 		}
 		return false;
@@ -37,9 +44,9 @@ public class Fingerprint {
 	
 	public static int nextprime() {
 		Random r = new Random();
-		int valeur = 2 + r.nextInt((int)Math.pow(2, 23) - 3);
+		int valeur = 2 + r.nextInt((int)Math.pow(2, 23) - 2);
 		while (!pseudoprime(valeur)) {
-			valeur = 2 + r.nextInt((int)Math.pow(2, 23) - 3);
+			valeur = 2 + r.nextInt((int)Math.pow(2, 23) - 2);
 		}
 		return valeur;
 	}
@@ -68,10 +75,45 @@ public class Fingerprint {
 	
 	return finger % p;
 }
+	//Temps d'exec très long attention !!! 
+	public static void testQ5(){
+		int cmp = 0, premier, finger1, finger2;
+		for(int i = 0; i < 1000; i++){
+			System.out.println(i);
+			premier = nextprime();
+			finger1 = fingerprint(premier,"test1");
+			finger2 = fingerprint(premier,"test4");
+			if(finger1 == finger2){
+				cmp++;
+			}
+		}
+		System.out.println("1000 tests sur 2 fichers test1 et test4 :");
+		System.out.println("% fingerprint identique : " + (cmp / 1000 * 100));
+	}
+	
+	public static void testQ6(){
+		int premier, cmp = 0, finger1, finger2;
+		for(int i = 0; i < 100; i++){
+			System.out.println(i);
+			premier = nextprime();
+			finger1 = fingerprint(premier,"test3.xpm");
+			finger2 = fingerprint(premier,"test4");
+			System.out.println("premier : " + premier + ", fingers :" + finger1 + ", " + finger2);
+			if(finger1 == finger2){
+				cmp++;
+			}
+		}
+		System.out.println("cmp : " + cmp);
+	}
+	
+	public static void testQ7(){
+		System.out.println(fingerprint(17,"test2"));
+		System.out.println(fingerprint(17,"test2"));
+
+
+	}
 	
 	public static void main(String[] args) {
-		int premier = nextprime();
-		int finger = fingerprint(premier,"test2");
-		System.out.println(finger);
+
 	}
 }
